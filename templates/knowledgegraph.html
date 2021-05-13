@@ -1,0 +1,992 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>故障分析知识图谱</title>
+
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="../static/images/logo1.jpg">
+    <!--Nifty Stylesheet [ REQUIRED ]-->
+    <link href="../static/css/nifty.min.css" rel="stylesheet">
+
+
+    <!--Nifty Premium Icon [ DEMONSTRATION ]-->
+    <link href="../static/css/nifty-demo-icons.min.css" rel="stylesheet">
+
+
+    <!--Demo [ DEMONSTRATION ]-->
+    <link href="../static/css/nifty-demo-icons.min.css" rel="stylesheet">
+    <link href="../static/css/nifty-demo.min.css" rel="stylesheet">
+    <link href="../static/css/font-awesome.min.css" rel="stylesheet">
+
+
+    <!--JAVASCRIPT-->
+    <!--=================================================-->
+
+    <!--Pace - Page Load Progress Par [OPTIONAL]-->
+    <link href="../static/css/pace.min.css" rel="stylesheet">
+
+    <script src="../static/js/pace.min.js"></script>
+
+
+    <!--jQuery [ REQUIRED ]-->
+    <script src="../static/js/jquery-2.2.4.min.js"></script>
+
+
+    <!--BootstrapJS [ RECOMMENDED ]-->
+    <script src="../static/js/bootstrap.min.js"></script>
+
+
+    <!--NiftyJS [ RECOMMENDED ]-->
+    <script src="../static/js/nifty.min.js"></script>
+    <script src="../static/js/icons.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script src="../static/js/tags.js"></script>
+
+
+    <!--=================================================-->
+
+    <!--Demo script [ DEMONSTRATION ]-->
+    <script src="../static/js/nifty-demo.min.js"></script>
+
+
+</head>
+
+<body>
+
+<div id="container" class="effect aside-float aside-bright mainnav-lg">
+
+    <!--NAVBAR-->
+    <!--===================================================-->
+    <header id="navbar">
+        <div id="navbar-container" class="boxed">
+
+            <!--Brand logo & name-->
+            <!--================================-->
+            <!--================================-->
+            <!--End brand logo & name-->
+
+
+            <!--Navbar Dropdown-->
+            <!--================================-->
+            <div class="navbar-content clearfix">
+
+                <ul class="nav navbar-top-links pull-left">
+
+                    <!--                    <h4>故障分析知识图谱</h4>-->
+
+
+                </ul>
+            </div>
+            <!--================================-->
+            <!--End Navbar Dropdown-->
+
+        </div>
+    </header>
+    <!--===================================================-->
+    <!--END NAVBAR-->
+
+    <div class="boxed">
+
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <style type="text/css">
+            #tagsList {
+                position: relative;
+                width: 250px;
+                height: 250px;
+            }
+
+            #tagsList a {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                font-family: Microsoft YaHei;
+                color: gray;
+                font-weight: bold;
+                text-decoration: none;
+                padding: 3px 6px;
+            }
+
+            #tagsList a:hover {
+                color: #249e92;
+                letter-spacing: 2px;
+            }
+
+            #search:focus {
+                border: 1px solid #249e92;
+            }
+
+            table.hovertable {
+                font-family: verdana, arial, sans-serif;
+                font-size: 11px;
+                color: #333333;
+                border-width: 1px;
+                border-color: #999999;
+                border-collapse: collapse;
+            }
+
+            table.hovertable th {
+                background-color: #c3dde0;
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #a9c6c9;
+            }
+
+            table.hovertable tr {
+                background-color: #d4e3e5;
+            }
+
+            table.hovertable td {
+                border-width: 1px;
+                padding: 8px;
+                border-style: solid;
+                border-color: #a9c6c9;
+            }
+        </style>
+        <div id="content-container">
+
+
+            <div class="col-lg-4" style="position:relative;margin-left:300px">
+                <div class="input-group">
+                    <input autocomplete="off" type="text" id="search_unit" class="form-control input-lg"
+                           placeholder="请输入维修单元" list="unitlist"/>
+                    <span class="input-group-addon btn btn-mint" onclick="search_unit()">搜索</span>
+                    <datalist id="unitlist">
+                        <!--                        <option value="ZC应用平台">ZC应用平台</option>-->
+                        <!--                        <option value="ZC应用软件">ZC应用软件</option>-->
+                        <!--                        <option value="ATP软件">ATP软件</option>-->
+                    </datalist>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="input-group">
+                    <input autocomplete="off" type="text" id="search" class="form-control input-lg"
+                           placeholder="请输入故障现象" list="phenomenonlist"/>
+                    <span class="input-group-addon btn btn-mint" onclick="search()">搜索</span>
+                    <datalist id="phenomenonlist">
+                        <!--                        <option value="某列车在某位置紧急制动">某列车在某位置紧急制动</option>-->
+                        <!--                        <option value="某列车在多位置紧急制动">某列车在多位置紧急制动</option>-->
+                    </datalist>
+
+                </div>
+            </div>
+            <div style="position:absolute;top:100px;right:200px" id="correlation_failure">
+                <h4>关联故障现象：</h4>
+                <h4>1.ATP模块断电</h4>
+                <h4>2.某列车在多位置紧急制动</h4>
+            </div>
+            <div class="row">
+                <div class="col-lg-8" style="height: 800px;width:60%" id="guanxi">
+                </div>
+                <table id="fault_detail" , class='hovertable' ,
+                       style="position:absolute;right:3%;top:200px;" border="1" width="360" height="50">
+
+                    <tr style="text-align: center;">
+                        <td colspan="2"><font size="3">故障链路</font>
+                        </td>
+                    </tr>
+                    <tr style=" text-align: center; height: 1rem;">
+                        <td colspan="2">
+                            <div class="form-group">
+                                <label for="host" class="control-label"></label>
+                                <select class="form-control host-input" name="UnitName" id="unit_name_list">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>
+                            故障名称
+                        </td>
+                        <td id="name"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>
+                            故障报警
+                        </td>
+                        <td id="alarm"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>
+                            故障现象
+                        </td>
+                        <td id="phenomenon"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>
+                            解决方案
+                        </td>
+                        <td id="solution"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>
+                            所属类别
+                        </td>
+                        <td id="category"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>
+                            所属部位
+                        </td>
+                        <td id="belong"></td>
+                    </tr>
+                </table>
+
+                <table id="fault_detail_2" , class='hovertable' ,
+                       style="position:absolute;right:3%;top:550px;" border="1" width="360" height="50">
+                    <tr style="text-align: center;">
+                        <td colspan="2"><font size="3"> 故障链路2（30%）</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="width:80px">
+                            <div class="form-group">
+                                <label for="host" class="control-label"></label>
+                                <select class="form-control host-input" name="UnitName" id="unit_name_list_2">
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>故障名称</td>
+                        <td id="name_2"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>故障报警</td>
+                        <td id="alarm_2"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>故障现象</td>
+                        <td id="phenomenon_2"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>解决方案</td>
+                        <td id="solution_2"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>所属类别</td>
+                        <td id="category_2"></td>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td>所属部位</td>
+                        <td id="belong_2"></td>
+                    </tr>
+                </table>
+
+                <table id="unit_detail" , class='hovertable' ,
+                       style="position:absolute;right:3%;top:200px;" border="1" width="360" height="50">
+                    <tr style="text-align: center;">
+                        <td colspan="2"><font size="3"> 最小可维修单元信息</font>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>维修单元名称</td>
+                        <td id="unit_name"></td>
+                    </tr>
+                    <tr>
+                        <td>所属类别</td>
+                        <td id="unit_category"></td>
+                    </tr>
+                    <tr>
+                        <td>所属部位</td>
+                        <td id="unit_belong"></td>
+                    </tr>
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障名称</td>-->
+                    <!--                        <td id="unit_error_name"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障现象</td>-->
+                    <!--                        <td id="error_phenomenon"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障报警</td>-->
+                    <!--                        <td id="unit_alarm"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障表现</td>-->
+                    <!--                        <td id="unit_phenomenon"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>解决方案</td>-->
+                    <!--                        <td id="unit_solution"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障名称2</td>-->
+                    <!--                        <td id="unit_error_name2"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障现象2</td>-->
+                    <!--                        <td id="error_phenomenon2"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障报警2</td>-->
+                    <!--                        <td id="unit_alarm2"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>故障表现2</td>-->
+                    <!--                        <td id="unit_phenomenon2"></td>-->
+                    <!--                    </tr>-->
+                    <!--                    <tr style="text-align: center;">-->
+                    <!--                        <td>解决方案2</td>-->
+                    <!--                        <td id="unit_solution2"></td>-->
+                    <!--                    </tr>-->
+
+                </table>
+
+                <div class="col-lg-2"></div>
+
+            </div>
+        </div>
+        <!--===================================================-->
+        <!--End page content-->
+
+
+    </div>
+    <!--===================================================-->
+    <!--END CONTENT CONTAINER-->
+
+
+    <!--MAIN NAVIGATION-->
+    <!--===================================================-->
+    <!--===================================================-->
+    <!--END MAIN NAVIGATION-->
+
+</div>
+
+<!-- FOOTER -->
+<!--===================================================-->
+<footer id="footer">
+
+    <p class="pad-lft">Copyright&#0169; 2021 </p>
+
+</footer>
+<!--===================================================-->
+<!-- END FOOTER -->
+
+<!-- SCROLL PAGE BUTTON -->
+<!--===================================================-->
+<button class="scroll-top btn">
+    <i class="pci-chevron chevron-up"></i>
+</button>
+<!--===================================================-->
+</div>
+<!--===================================================-->
+<!-- END OF CONTAINER -->
+<script>
+    // var myChart = echarts.init(document.getElementById("guanxi"));
+    // var option;
+    // option = {
+    //     title: {
+    //         text: '故障',
+    //
+    //         textStyle: {
+    //             fontSize: 80,
+    //             textAlign: 'center',
+    //         }
+    //     },
+    //     tooltip: {
+    //         // formatter:function(params){
+    //         //     console.log(params);
+    //         // }
+    //         trigger: 'item',
+    //         formatter: function (params) {
+    //             console.log(params);
+    //             return params.nodes.des;
+    //         }
+    //     },
+    //     animationDurationUpdate: 1500,
+    //     animationEasingUpdate: 'quinticInOut',
+    //     series: [
+    //         {
+    //             type: 'graph',
+    //             layout: 'force',
+    //             symbolSize: 50,
+    //             roam: true,
+    //             label: {
+    //                 show: true
+    //             },
+    //             edgeSymbol: ['circle', 'arrow'],
+    //             edgeSymbolSize: [4, 10],
+    //             edgeLabel: {
+    //                 fontSize: 20
+    //             },
+    //             focusNodeAdjacency: true,
+    //             force: {
+    //                 repulsion: 1500,
+    //                 edgeLength: [10, 100],
+    //                 layoutAnimation: false,
+    //             },
+    //             lineStyle: {
+    //                 opacity: 1,
+    //                 width: 2,
+    //                 curveness: 0,
+    //                 color: '#6e7074',
+    //             },
+    //             itemStyle: {
+    //                 color: 'blue'
+    //             },
+    //             // tooltip: {
+    //             //     formatter: function (x) {
+    //             //         return x.nodes.des;
+    //             //     }
+    //             // },
+    //             nodes: [],
+    //             links: [],
+    //
+    //         }
+    //     ]
+    // };
+
+    window.onload = function () {
+        function charts_show() {
+            $.getJSON('/search_name', {
+                name: 'knowledge_graph',
+
+            }, function (json) {
+
+                option.series[0].data = json.data;
+                option.series[0].links = json.links;
+
+                // myChart.setOption(option, true);
+                // $("#unitlist").empty();
+                //填充搜索下拉框
+                for (var i = 0; i < json.data.length; i++) {
+                    $new = $("<option value= '" + json.data[i].name + "'>" + json.data[i].name + "</option>");
+                    $("#unitlist").append($new);
+                }
+                for (var i = 0; i < json.phenomenon.length; i++) {
+                    $new = $("<option value= '" + json.phenomenon[i] + "'>" + json.phenomenon[i] + "</option>");
+                    $("#phenomenonlist").append($new);
+                }
+
+            });
+
+        }
+
+        charts_show();
+        myChart.setOption(option, true);
+        //点击节点触发事件
+        myChart.on('click', function (params) {
+            if (params.dataType = "node") {
+                // alert(params.data.name);
+                function search_click_unit() {
+                    $("#fault_detail").hide();
+                    $("#fault_detail_2").hide();
+                    $.getJSON('/search_click_unit', {
+                        unit_click: params.data.name,
+
+                    }, function (json) {
+                        document.getElementById("unit_name").innerHTML = json.unit_data[0].unit_name;
+                        document.getElementById("unit_category").innerHTML = json.unit_data[0].unit_category;
+                        document.getElementById("unit_belong").innerHTML = json.unit_data[0].unit_belong;
+
+                        // document.getElementById("unit_alarm").innerHTML = json.error_data[0].error_alarm;
+                        // document.getElementById("unit_phenomenon").innerHTML = json.error_data[0].error_phenomenon;
+                        // document.getElementById("error_phenomenon").innerHTML = json.error_data[0].phenomenon;
+                        // document.getElementById("unit_solution").innerHTML = json.error_data[0].error_solution;
+                        // document.getElementById("unit_error_name").innerHTML = json.error_data[0].error_name;
+
+                        //删除上次查询最小维修单元后，展示的故障信息
+                        var table_size = $('#unit_detail tr').length;
+                        // console.log('test');
+                        // console.log(table_size);
+                        // $('#unit_detail tr').slice(4,table_size).remove;
+                        $('#unit_detail tr:gt(3)').remove();
+                        // var table_size2 = $('#unit_detail tr').length;
+                        // console.log('test2');
+                        // console.log(table_size2);
+
+                        //根据故障名称的数量，动态添加故障信息
+
+                        for (var i = 0; i < json.error_data.length; i++) {
+
+                            var td_unit_error_name = document.createElement("td");
+                            var unit_error_name = document.createTextNode('故障名称' + (i + 1));
+                            td_unit_error_name.appendChild(unit_error_name);
+                            var td_unit_error_name_content = document.createElement("td");
+                            var unit_error_name_content = document.createTextNode(json.error_data[i].error_name);
+                            td_unit_error_name_content.appendChild(unit_error_name_content);
+                            var tr_unit_error_name = document.createElement("tr");
+                            tr_unit_error_name.appendChild(td_unit_error_name);
+                            tr_unit_error_name.appendChild(td_unit_error_name_content);
+
+                            var td_unit_phenomenon = document.createElement("td");
+                            var unit_phenomenon_name = document.createTextNode('故障现象');
+                            td_unit_phenomenon.appendChild(unit_phenomenon_name);
+                            var td_unit_phenomenon_content = document.createElement("td");
+                            var unit_phenomenon_name_content = document.createTextNode(json.phenomenon[i].phenomenon);
+                            td_unit_phenomenon_content.appendChild(unit_phenomenon_name_content);
+                            var tr_unit_phenomenon_name = document.createElement("tr");
+                            tr_unit_phenomenon_name.appendChild(td_unit_phenomenon);
+                            tr_unit_phenomenon_name.appendChild(td_unit_phenomenon_content);
+
+                            var td_unit_alarm = document.createElement("td");
+                            var unit_alarm_name = document.createTextNode('故障警报');
+                            td_unit_alarm.appendChild(unit_alarm_name);
+                            var td_unit_alarm_content = document.createElement("td");
+                            var unit_alarm_name_content = document.createTextNode(json.error_data[i].error_alarm);
+                            td_unit_alarm_content.appendChild(unit_alarm_name_content);
+                            var tr_unit_alarm_name = document.createElement("tr");
+                            tr_unit_alarm_name.appendChild(td_unit_alarm);
+                            tr_unit_alarm_name.appendChild(td_unit_alarm_content);
+
+                            var td_unit_error_phenomenon = document.createElement("td");
+                            var unit_error_phenomenon_name = document.createTextNode('故障表现');
+                            td_unit_error_phenomenon.appendChild(unit_error_phenomenon_name);
+                            var td_unit_error_phenomenon_content = document.createElement("td");
+                            var unit_error_phenomenon_name_content = document.createTextNode(json.error_data[i].error_phenomenon);
+                            td_unit_error_phenomenon_content.appendChild(unit_error_phenomenon_name_content);
+                            var tr_unit_error_phenomenon_name = document.createElement("tr");
+                            tr_unit_error_phenomenon_name.appendChild(td_unit_error_phenomenon);
+                            tr_unit_error_phenomenon_name.appendChild(td_unit_error_phenomenon_content);
+
+                            var td_unit_solution = document.createElement("td");
+                            var unit_solution_name = document.createTextNode('解决方案');
+                            td_unit_solution.appendChild(unit_solution_name);
+                            var td_unit_solution_content = document.createElement("td");
+                            var unit_solution_name_content = document.createTextNode(json.error_data[i].error_solution);
+                            td_unit_solution_content.appendChild(unit_solution_name_content);
+                            var tr_unit_solution_name = document.createElement("tr");
+                            tr_unit_solution_name.appendChild(td_unit_solution);
+                            tr_unit_solution_name.appendChild(td_unit_solution_content);
+
+
+                            var unit_table = document.getElementById("unit_detail");
+                            unit_table.appendChild(tr_unit_error_name);
+                            if (json.error_data.length == json.phenomenon.length) {
+                                unit_table.appendChild(tr_unit_phenomenon_name);
+                            } else {
+                                for (var i = 0; i < json.phenomenon.length; i++) {
+                                    var td_unit_phenomenon = document.createElement("td");
+                                    var unit_phenomenon_name = document.createTextNode('故障现象' + (i + 1));
+                                    td_unit_phenomenon.appendChild(unit_phenomenon_name);
+                                    var td_unit_phenomenon_content = document.createElement("td");
+                                    var unit_phenomenon_name_content = document.createTextNode(json.phenomenon[i].phenomenon);
+                                    td_unit_phenomenon_content.appendChild(unit_phenomenon_name_content);
+                                    var tr_unit_phenomenon_name = document.createElement("tr");
+                                    tr_unit_phenomenon_name.appendChild(td_unit_phenomenon);
+                                    tr_unit_phenomenon_name.appendChild(td_unit_phenomenon_content);
+                                    var unit_table = document.getElementById("unit_detail");
+                                    unit_table.appendChild(tr_unit_phenomenon_name);
+                                }
+                            }
+
+                            unit_table.appendChild(tr_unit_alarm_name);
+                            unit_table.appendChild(tr_unit_error_phenomenon_name);
+                            unit_table.appendChild(tr_unit_solution_name);
+
+                        }
+
+
+                        $("#unit_detail").show();
+
+                    });
+                }
+                search_click_unit()
+            }
+        });
+    }
+
+</script>
+
+<script type="text/javascript">
+    var all_data;
+    $("#unit_detail").hide();
+    $("#fault_detail").hide();
+    $("#correlation_failure").hide();
+    $("#unit_name_list").change(function () {
+        console.log(all_data.data);
+        // var unit_name = $("#unit_name_list").val();
+        // //    更改表格里的内容
+        // for (var i = 0; i < all_data.data.length; i++) {
+        //     if (unit_name == all_data.data[i].name) {
+        //         document.getElementById("name").innerHTML = all_data.data[i].error_name;
+        //         document.getElementById("alarm").innerHTML = all_data.data[i].alarm;
+        //         document.getElementById("phenomenon").innerHTML = all_data.data[i].phenomenon;
+        //         document.getElementById("solution").innerHTML = all_data.data[i].solution;
+        //         break;
+        //     }
+        // }
+        var unit_name = $("#unit_name_list").val();
+        for (var i = 0; i < all_data.table_data[0].length; i++) {
+            if (unit_name == all_data.table_data[0][i].node_name) {
+                document.getElementById("name").innerHTML = all_data.table_data[0][i].fault_name;
+                document.getElementById("alarm").innerHTML = all_data.table_data[0][i].fault_alarm;
+                document.getElementById("phenomenon").innerHTML = all_data.table_data[0][i].fault_phenomenon;
+                document.getElementById("solution").innerHTML = all_data.table_data[0][i].fault_solution;
+                document.getElementById("category").innerHTML = all_data.table_data[0][i].unit_category;
+                document.getElementById("belong").innerHTML = all_data.table_data[0][i].unit_belong;
+                break;
+            }
+        }
+        //    ......
+    });
+    console.log("111")
+    $("#fault_detail_2").hide();
+    console.log("222")
+    $("#unit_name_list_2").change(function () {
+        var unit_name_2 = $("#unit_name_list_2").val();
+        //    更改表格里的内容
+        for (var i = 0; i < all_data.table_data[1].length; i++) {
+            if (unit_name_2 == all_data.table_data[1][i].node_name) {
+                document.getElementById("name_2").innerHTML = all_data.table_data[1][i].fault_name;
+                document.getElementById("alarm_2").innerHTML = all_data.table_data[1][i].fault_alarm;
+                document.getElementById("phenomenon_2").innerHTML = all_data.table_data[1][i].fault_phenomenon;
+                document.getElementById("solution_2").innerHTML = all_data.table_data[1][i].fault_solution;
+                document.getElementById("category_2").innerHTML = all_data.table_data[1][i].unit_category;
+                document.getElementById("belong_2").innerHTML = all_data.table_data[1][i].unit_belong;
+                break;
+            }
+        }
+        //    ......
+    });
+
+    $(document).keypress(function (e) {
+        // 回车键事件
+        if (e.which == 13) {
+            search();
+        }
+    });
+    window.onresize = function () {
+
+        myChart.resize();
+    }
+
+    $.ajaxSetup({async: false});
+    var myChart = echarts.init(document.getElementById("guanxi"));
+    myChart.showLoading();
+
+    myChart.hideLoading();
+    option = {
+        title: {
+            text: '故障分析知识图谱',
+            textStyle: {
+                fontSize: 30,
+            }
+        },
+        tooltip: {
+            // trigger:'nodes',
+            formatter: function (params) {
+                //console.log(params);
+                if (params.dataType == "node") {
+                    return params.data.des;
+                }
+                if (params.dataType == "edge") {
+                    return params.data.value
+                }
+            }
+        },
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        color: [
+            "#c23531",
+            "#2f4554",
+            "#61a0a8",
+            "#d48265",
+            "#749f83",
+            "#ca8622",
+            "#bda29a",
+            "#6e7074",
+            "#546570",
+            "#c4ccd3",
+            "#f05b72",
+            "#ef5b9c",
+            "#f47920",
+            "#905a3d",
+            "#fab27b",
+            "#2a5caa",
+            "#444693",
+            "#726930",
+            "#b2d235",
+            "#6d8346",
+            "#ac6767",
+            "#1d953f",
+            "#6950a1",
+            "#918597"
+        ],
+        series: [
+            {
+                type: 'graph',
+                layout: 'force',
+                symbolSize: 50,
+                roam: true,
+                categories: [
+                    {
+                        name: 'ZC',
+                    },
+                    {
+                        name: 'ATP',
+                    },
+                    {
+                        name: '车载DCS',
+                    },
+                    {
+                        name: '地面DCS',
+                    },
+                ],
+                label: {
+                    show: true,
+                    position: 'bottom',
+                    formatter: '{b}',
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 20
+                },
+                focusNodeAdjacency: true,
+                draggable: true,
+                force: {
+                    repulsion: 2500,
+                    edgeLength: 30,
+                    layoutAnimation: true,
+                },
+                lineStyle: {
+                    opacity: 1,
+                    width: 2,
+                    curveness: 0,
+                    color: '#2f4554',
+                },
+                data: [],
+                links: [],
+
+            }
+        ]
+    };
+
+    function search() {
+        $("#fault_detail").hide();
+        $("#fault_detail_2").hide();
+        $("#unit_detail").hide();
+        $("#correlation_failure").hide();
+        $.getJSON('/search_name', {
+            name: $("#search").val(),
+
+        }, function (json) {
+            all_data = json;
+            option.series[0].data = json.data;
+            option.series[0].links = json.links;
+            myChart.setOption(option, true);
+            //    整理后端传来的数据，用于填充下拉框
+            // for (var i = 0; i < json.data.length; i++) {
+            //     $new = $("<option value= '" + json.data[i].name + "'>" + json.data[i].name + "</option>");
+            //     $("#unit_name_list").append($new);
+            // }
+            //
+            // //    整理后端传来的数据，用于填充表格
+            // var unit_name = $("#unit_name_list").val();
+            // for (var i = 0; i < json.data.length; i++) {
+            //     if (unit_name == json.data[i].name) {
+            //         document.getElementById("name").innerHTML = json.data[i].error_name;
+            //         document.getElementById("alarm").innerHTML = json.data[i].alarm;
+            //         document.getElementById("phenomenon").innerHTML = json.data[i].phenomenon;
+            //         document.getElementById("solution").innerHTML = json.data[i].solution;
+            //         document.getElementById("category").innerHTML = json.data[i].category;
+            //         document.getElementById("belong").innerHTML = json.data[i].belong;
+            //         break;
+            //     }
+            // }]
+            $("#unit_name_list").empty();
+            for (var i = 0; i < json.table_data[0].length; i++) {
+                $new = $("<option value= '" + json.table_data[0][i].node_name + "'>" + json.table_data[0][i].node_name + "</option>");
+                $("#unit_name_list").append($new);
+            }
+
+            //    整理后端传来的数据，用于填充表格
+            var unit_name = $("#unit_name_list").val();
+            for (var i = 0; i < json.table_data[0].length; i++) {
+                if (unit_name == json.table_data[0][i].node_name) {
+                    document.getElementById("name").innerHTML = json.table_data[0][i].fault_name;
+                    document.getElementById("alarm").innerHTML = json.table_data[0][i].fault_alarm;
+                    document.getElementById("phenomenon").innerHTML = json.table_data[0][i].fault_phenomenon;
+                    document.getElementById("solution").innerHTML = json.table_data[0][i].fault_solution;
+                    document.getElementById("category").innerHTML = json.table_data[0][i].unit_category;
+                    document.getElementById("belong").innerHTML = json.table_data[0][i].unit_belong;
+                    break;
+                }
+            }
+            $("#fault_detail").show();
+            $("#correlation_failure").show();
+            //链路2
+            $("#unit_name_list_2").empty();
+            if (json.table_data.length > 1) {
+                for (var i = 0; i < json.table_data[1].length; i++) {
+                    $new = $("<option value= '" + json.table_data[1][i].node_name + "'>" + json.table_data[1][i].node_name + "</option>");
+                    $("#unit_name_list_2").append($new);
+                }
+
+                //    整理后端传来的数据，用于填充表格
+                var unit_name_2 = $("#unit_name_list_2").val();
+                for (var i = 0; i < json.table_data[1].length; i++) {
+                    if (unit_name_2 == json.table_data[1][i].node_name) {
+                        document.getElementById("name_2").innerHTML = json.table_data[1][i].fault_name;
+                        document.getElementById("alarm_2").innerHTML = json.table_data[1][i].fault_alarm;
+                        document.getElementById("phenomenon_2").innerHTML = json.table_data[1][i].fault_phenomenon;
+                        document.getElementById("solution_2").innerHTML = json.table_data[1][i].fault_solution;
+                        document.getElementById("category_2").innerHTML = json.table_data[1][i].unit_category;
+                        document.getElementById("belong_2").innerHTML = json.table_data[1][i].unit_belong;
+                        break;
+                    }
+                }
+            }
+
+
+            console.log(json.table_data.length);
+            if (json.table_data.length > 1) {
+                $("#fault_detail tr").eq(0).remove();
+                $("#fault_detail").prepend('<tr style="text-align: center;"><td colspan="2"><font size="3"> 故障链路1（70%）</font></td></tr>');
+                $("#fault_detail_2").show();
+            }
+                // $("#fault_detail tr").eq(0).remove();
+            // $("#fault_detail").prepend('<tr style="text-align: center;"><td colspan="2"><font size="3"> 故障链路</font></td></tr>');
+            else {
+                console.log('testtr');
+                $("#fault_detail tr").eq(0).remove();
+                $("#fault_detail").prepend('<tr style="text-align: center;"><td colspan="2"><font size="3"> 故障链路</font></td></tr>');
+            }
+        });
+    }
+
+    // $(".col-lg-4 a").click(function () {
+    //
+    //     $.getJSON('/search_name', {
+    //         name: $(this).attr("data"),
+    //
+    //     }, function (json) {
+    //
+    //         option.series[0].data = json.data.map(function (node, idx) {
+    //             data.id = idx;
+    //             return data;
+    //         });
+    //
+    //         option.series[0].links = json.links;
+    //
+    //         myChart.setOption(option, true);
+    //
+    //     })
+    // });
+    function search_unit() {
+        $("#fault_detail").hide();
+        $("#fault_detail_2").hide();
+        $.getJSON('/search_unit', {
+            unit: $("#search_unit").val(),
+
+        }, function (json) {
+            document.getElementById("unit_name").innerHTML = json.unit_data[0].unit_name;
+            document.getElementById("unit_category").innerHTML = json.unit_data[0].unit_category;
+            document.getElementById("unit_belong").innerHTML = json.unit_data[0].unit_belong;
+
+            // document.getElementById("unit_alarm").innerHTML = json.error_data[0].error_alarm;
+            // document.getElementById("unit_phenomenon").innerHTML = json.error_data[0].error_phenomenon;
+            // document.getElementById("error_phenomenon").innerHTML = json.error_data[0].phenomenon;
+            // document.getElementById("unit_solution").innerHTML = json.error_data[0].error_solution;
+            // document.getElementById("unit_error_name").innerHTML = json.error_data[0].error_name;
+
+            //删除上次查询最小维修单元后，展示的故障信息
+            var table_size = $('#unit_detail tr').length;
+            // console.log('test');
+            // console.log(table_size);
+            // $('#unit_detail tr').slice(4,table_size).remove;
+            $('#unit_detail tr:gt(3)').remove();
+            // var table_size2 = $('#unit_detail tr').length;
+            // console.log('test2');
+            // console.log(table_size2);
+
+            //根据故障名称的数量，动态添加故障信息
+
+            for (var i = 0; i < json.error_data.length; i++) {
+
+                var td_unit_error_name = document.createElement("td");
+                var unit_error_name = document.createTextNode('故障名称' + (i + 1));
+                td_unit_error_name.appendChild(unit_error_name);
+                var td_unit_error_name_content = document.createElement("td");
+                var unit_error_name_content = document.createTextNode(json.error_data[i].error_name);
+                td_unit_error_name_content.appendChild(unit_error_name_content);
+                var tr_unit_error_name = document.createElement("tr");
+                tr_unit_error_name.appendChild(td_unit_error_name);
+                tr_unit_error_name.appendChild(td_unit_error_name_content);
+
+                var td_unit_phenomenon = document.createElement("td");
+                var unit_phenomenon_name = document.createTextNode('故障现象');
+                td_unit_phenomenon.appendChild(unit_phenomenon_name);
+                var td_unit_phenomenon_content = document.createElement("td");
+                var unit_phenomenon_name_content = document.createTextNode(json.phenomenon[i].phenomenon);
+                td_unit_phenomenon_content.appendChild(unit_phenomenon_name_content);
+                var tr_unit_phenomenon_name = document.createElement("tr");
+                tr_unit_phenomenon_name.appendChild(td_unit_phenomenon);
+                tr_unit_phenomenon_name.appendChild(td_unit_phenomenon_content);
+
+                var td_unit_alarm = document.createElement("td");
+                var unit_alarm_name = document.createTextNode('故障警报');
+                td_unit_alarm.appendChild(unit_alarm_name);
+                var td_unit_alarm_content = document.createElement("td");
+                var unit_alarm_name_content = document.createTextNode(json.error_data[i].error_alarm);
+                td_unit_alarm_content.appendChild(unit_alarm_name_content);
+                var tr_unit_alarm_name = document.createElement("tr");
+                tr_unit_alarm_name.appendChild(td_unit_alarm);
+                tr_unit_alarm_name.appendChild(td_unit_alarm_content);
+
+                var td_unit_error_phenomenon = document.createElement("td");
+                var unit_error_phenomenon_name = document.createTextNode('故障表现');
+                td_unit_error_phenomenon.appendChild(unit_error_phenomenon_name);
+                var td_unit_error_phenomenon_content = document.createElement("td");
+                var unit_error_phenomenon_name_content = document.createTextNode(json.error_data[i].error_phenomenon);
+                td_unit_error_phenomenon_content.appendChild(unit_error_phenomenon_name_content);
+                var tr_unit_error_phenomenon_name = document.createElement("tr");
+                tr_unit_error_phenomenon_name.appendChild(td_unit_error_phenomenon);
+                tr_unit_error_phenomenon_name.appendChild(td_unit_error_phenomenon_content);
+
+                var td_unit_solution = document.createElement("td");
+                var unit_solution_name = document.createTextNode('解决方案');
+                td_unit_solution.appendChild(unit_solution_name);
+                var td_unit_solution_content = document.createElement("td");
+                var unit_solution_name_content = document.createTextNode(json.error_data[i].error_solution);
+                td_unit_solution_content.appendChild(unit_solution_name_content);
+                var tr_unit_solution_name = document.createElement("tr");
+                tr_unit_solution_name.appendChild(td_unit_solution);
+                tr_unit_solution_name.appendChild(td_unit_solution_content);
+
+
+                var unit_table = document.getElementById("unit_detail");
+                unit_table.appendChild(tr_unit_error_name);
+                if (json.error_data.length == json.phenomenon.length) {
+                    unit_table.appendChild(tr_unit_phenomenon_name);
+                } else {
+                    for (var i = 0; i < json.phenomenon.length; i++) {
+                        var td_unit_phenomenon = document.createElement("td");
+                        var unit_phenomenon_name = document.createTextNode('故障现象' + (i + 1));
+                        td_unit_phenomenon.appendChild(unit_phenomenon_name);
+                        var td_unit_phenomenon_content = document.createElement("td");
+                        var unit_phenomenon_name_content = document.createTextNode(json.phenomenon[i].phenomenon);
+                        td_unit_phenomenon_content.appendChild(unit_phenomenon_name_content);
+                        var tr_unit_phenomenon_name = document.createElement("tr");
+                        tr_unit_phenomenon_name.appendChild(td_unit_phenomenon);
+                        tr_unit_phenomenon_name.appendChild(td_unit_phenomenon_content);
+                        var unit_table = document.getElementById("unit_detail");
+                        unit_table.appendChild(tr_unit_phenomenon_name);
+                    }
+                }
+
+                unit_table.appendChild(tr_unit_alarm_name);
+                unit_table.appendChild(tr_unit_error_phenomenon_name);
+                unit_table.appendChild(tr_unit_solution_name);
+
+            }
+
+
+            $("#unit_detail").show();
+
+        });
+    }
+</script>
+</body>
+</html>
