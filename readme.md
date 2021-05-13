@@ -1,16 +1,19 @@
-#¹ÊÕÏ·ÖÎöÖªÊ¶Í¼Æ×demo
-###ÎÄ¼þ
-1.app.pyÊÇÕû¸öÏµÍ³µÄÖ÷Èë¿Ú  
-2.templatesÎÄ¼þ¼ÐÊÇHTMLµÄÒ³Ãæ  
-  knowledgegraph.htmlÊÇÍ¼Æ×Õ¹Ê¾Ò³Ãæ  
-3.staticÎÄ¼þ¼Ð´æ·ÅcssºÍjs,ÊÇÒ³ÃæµÄÑùÊ½ºÍÐ§¹ûµÄÎÄ¼þ   
-4.neo_dbÎÄ¼þ¼ÐÊÇÖªÊ¶Í¼Æ×¹¹½¨Ä£¿é  
- config.pyÅäÖÃ²ÎÊý  
- query_graph.pyÊÇÖªÊ¶Í¼Æ×µÄ²éÑ¯  
+**æ•…éšœåˆ†æžçŸ¥è¯†å›¾è°±demo**
+
+**æ–‡ä»¶**
+
+1.app.pyï¼šç³»ç»Ÿçš„å…¥å£  
+2.templates  
+3.static
+4.neo_db
+  config.pyï¼šæ•°æ®åº“é…ç½®å‚æ•°  
+  query_graph.pyï¼šä¸»ç¨‹åº  
 
 
-###²¿Êð²½Öè  
-1.°´ÕÕËùÐèµÄ¿â£¬Ö´ÐÐpip install -r requirement.txt  
-2.°²×°ºÃneo4jÍ¼Êý¾Ý¿â£¬µ¼ÈëÊý¾Ý¡£ÐÞ¸Äneo_dbÄ¿Â¼ÏÂconfig.py,ÉèÖÃÍ¼Êý¾Ý¿âµÄÕËºÅºÍÃÜÂë¡£  
-3.ÔËÐÐpython app.py,ä¯ÀÀÆ÷´ò¿ªlocalhost:5000¼´¿É²é¿´
+**éƒ¨ç½²æ­¥éª¤**
+
+1.æŒ‰ç…§æ‰€éœ€çš„åº“ï¼Œæ‰§è¡Œpip install -r requirement.txt  
+2.å®‰è£…å¥½neo4jå›¾æ•°æ®åº“ï¼Œå¯¼å…¥æ•°æ®
+3.ä¿®æ”¹neo_dbç›®å½•ä¸‹config.py,è®¾ç½®å›¾æ•°æ®åº“çš„è´¦å·å’Œå¯†ç   
+4.è¿è¡Œpython app.py,æµè§ˆå™¨æ‰“å¼€localhost:5000å³å¯æŸ¥çœ‹
 
